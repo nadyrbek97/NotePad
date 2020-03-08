@@ -19,5 +19,6 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {
         String command = actionEvent.getActionCommand();
         System.out.println(command);
+        model.doAction(command);
     }
 }

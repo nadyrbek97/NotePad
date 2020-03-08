@@ -1,29 +1,59 @@
+import javafx.stage.FileChooser;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public class Viewer {
-    Controller controller;
-    JFrame jFrame;
+    private Controller controller;
+    private JFrame frame;
+    private JTextArea textArea;
+    private JFileChooser fileChooser;
 
     public Viewer(){
         System.out.println("Viewer constructor");
         controller = new Controller(this);
         Model model = controller.getModel();
+
+        Canvas canvas = new Canvas(model);
+
+        // Text area
+        textArea = new JTextArea();
+        textArea.setFont(new java.awt.Font("Alergia", java.awt.Font.BOLD | java.awt.Font.ITALIC, 25));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
         // Menu Bar
         JMenuBar menuBar = getMenuBar();
 
         // main Frame
-        jFrame = new JFrame("NotePad by Nadyrbek Sultanov");
-        jFrame.setVisible(true);
-        jFrame.setSize(800,800);
-        jFrame.setJMenuBar(menuBar);
+        frame = new JFrame("NotePad by Nadyrbek Sultanov");
+        frame.setVisible(true);
+        frame.setSize(800,800);
+        frame.setJMenuBar(menuBar);
+        frame.add(scrollPane);
 
 
     }
 
+    public void update(String text){
+        textArea.setText(text);
+    }
+
+    public String openFileChooser() {
+        if (fileChooser == null) {
+            fileChooser = new JFileChooser();
+        }
+        int returnVal = fileChooser.showOpenDialog(frame);
+        String fileName = fileChooser.getSelectedFile().getAbsolutePath();
+        return fileName;
+    }
+
+    /**
+     * Create Menu Bar with menu items
+     * @return
+     */
     private JMenuBar getMenuBar() {
-        JMenuItem createDocumentJMenuItem = new JMenuItem("Create New Document", new ImageIcon("images/new.gif"));
+        JMenuItem createDocumentJMenuItem = new JMenuItem("Create New Document", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/new.gif"));
         createDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         createDocumentJMenuItem.addActionListener(controller);
         createDocumentJMenuItem.setActionCommand("New Document");
