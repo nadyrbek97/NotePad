@@ -4,6 +4,5 @@ public class Canvas {
 
     public Canvas(Model model) {
         this.model = model;
-
     }
 }
