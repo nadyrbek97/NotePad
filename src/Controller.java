@@ -3,11 +3,9 @@ import java.awt.event.ActionListener;
 
 public class Controller implements ActionListener {
 
-    Model model;
-
+    private Model model;
 
     public Controller(Viewer viewer) {
-        System.out.println("Controller constructor");
         model = new Model(viewer);
     }
 
@@ -15,10 +13,12 @@ public class Controller implements ActionListener {
         return model;
     }
 
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         String command = actionEvent.getActionCommand();
         System.out.println(command);
         model.doAction(command);
     }
+
 }

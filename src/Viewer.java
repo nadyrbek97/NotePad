@@ -52,13 +52,32 @@ public class Viewer {
         textArea.setText(text);
     }
 
+    public JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public int fileSaveDialog() {
+        String[] options = {"YES", "NO", "CANCEL"};
+        return JOptionPane.showOptionDialog(new JFrame(),
+                "The unsaved file context will be lost",
+                "Save file?",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                new ImageIcon("/home/nadyrbek/development/NotePad/src/images/clear.gif"),
+                options,
+                options[2]);
+    }
+
+    /**
+     * Opens file chooser window
+     * @return
+     */
     public String openFileChooser() {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
         }
-        int returnVal = fileChooser.showOpenDialog(frame);
-        String fileName = fileChooser.getSelectedFile().getAbsolutePath();
-        return fileName;
+        fileChooser.showOpenDialog(frame);
+        return fileChooser.getSelectedFile().getAbsolutePath();
     }
 
     /**

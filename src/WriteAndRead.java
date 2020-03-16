@@ -1,6 +1,4 @@
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * WriteAndRead class writes and read file content
@@ -33,5 +31,20 @@ public class WriteAndRead{
         }
 
         return text;
+    }
+
+    /**
+     * Write data to the file
+     * @param filename
+     * @param text
+     */
+    public static void writeToFile(String filename, String text) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filename));
+            bufferedWriter.write(text);
+            bufferedWriter.close();
+        } catch (IOException ioe) {
+            System.out.println(ioe);
+        }
     }
 }
