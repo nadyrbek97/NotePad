@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -32,6 +33,7 @@ public class Viewer {
 
         // Text area
         textArea = new JTextArea();
+        textArea.setBackground(Color.lightGray);
         textArea.setFont(new java.awt.Font("Alergia", java.awt.Font.BOLD | java.awt.Font.ITALIC, 20));
         JScrollPane scrollPane = new JScrollPane(textArea);
 
@@ -45,17 +47,28 @@ public class Viewer {
         frame.setJMenuBar(menuBar);
         frame.add(scrollPane);
 
-
     }
 
+    /**
+     * Update text area context
+     * @param text
+     */
     public void update(String text){
         textArea.setText(text);
     }
 
+    /**
+     * Return text area
+     * @return
+     */
     public JTextArea getTextArea() {
         return textArea;
     }
 
+    /**
+     * Option page displays when user tries to create new file
+     * @return
+     */
     public int fileSaveDialog() {
         String[] options = {"YES", "NO", "CANCEL"};
         return JOptionPane.showOptionDialog(new JFrame(),
@@ -72,10 +85,11 @@ public class Viewer {
      * Opens file chooser window
      * @return
      */
-    public String openFileChooser() {
+    public String openFileChooser(String command) {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
         }
+        fileChooser.setApproveButtonText(command);
         fileChooser.showOpenDialog(frame);
         return fileChooser.getSelectedFile().getAbsolutePath();
     }
@@ -107,7 +121,7 @@ public class Viewer {
         /**
          * Ctrl-N
          */
-        JMenuItem createDocumentJMenuItem = new JMenuItem("Create New Document", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/new.gif"));
+        JMenuItem createDocumentJMenuItem = new JMenuItem("New Document", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/new.gif"));
         createDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         createDocumentJMenuItem.addActionListener(controller);
         createDocumentJMenuItem.setActionCommand("New Document");
@@ -129,13 +143,6 @@ public class Viewer {
         saveDocumentJMenuItem.setActionCommand("Save Document");
 
         /**
-         * Save As
-         */
-        JMenuItem saveAsDocumentJMenuItem = new JMenuItem("Save as ...", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/save_as.gif"));
-        saveAsDocumentJMenuItem.addActionListener(controller);
-        saveAsDocumentJMenuItem.setActionCommand("Save As Document");
-
-        /**
          * Ctrl-P
          */
         JMenuItem printDocumentJMenuItem = new JMenuItem("Print ...", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/print.gif"));
@@ -146,7 +153,7 @@ public class Viewer {
         /**
          * Exit
          */
-        JMenuItem closeJMenuItem = new JMenuItem("Exit", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/close.gif"));
+        JMenuItem closeJMenuItem = new JMenuItem("Exit", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/clear.gif"));
         closeJMenuItem.addActionListener(controller);
         closeJMenuItem.setActionCommand("Close Program");
 
@@ -156,7 +163,6 @@ public class Viewer {
         fileMenu.add(createDocumentJMenuItem);
         fileMenu.add(openDocumentJMenuItem);
         fileMenu.add(saveDocumentJMenuItem);
-        fileMenu.add(saveAsDocumentJMenuItem);
         fileMenu.add(new JSeparator());
         fileMenu.add(printDocumentJMenuItem);
         fileMenu.add(new JSeparator());

@@ -64,7 +64,7 @@ public class Model {
      */
     private boolean saveDocument() {
         try {
-            String fileName = viewer.openFileChooser();
+            String fileName = viewer.openFileChooser("Save");
             text = viewer.getTextArea().getText();
             save(fileName, text);
             return true;
@@ -87,7 +87,7 @@ public class Model {
      */
     private void openDocument() {
         try {
-            String fileName = viewer.openFileChooser();
+            String fileName = viewer.openFileChooser("Open");
             String text = open(fileName);
             viewer.update(text);
         } catch (NullPointerException e) {
@@ -101,4 +101,5 @@ public class Model {
     private void exit() {
         System.exit(0);
     }
+
 }
