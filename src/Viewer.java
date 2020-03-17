@@ -22,6 +22,7 @@ public class Viewer {
     private JFrame frame;
     private JTextArea textArea;
     private JFileChooser fileChooser;
+    private Canvas canvas;
 
     /**
      * All depended objects created in Viewer constructor
@@ -29,7 +30,7 @@ public class Viewer {
     public Viewer(){
         controller = new Controller(this);
         Model model = controller.getModel();
-        Canvas canvas = new Canvas(model);
+        canvas = new Canvas(model);
 
         // Text area
         textArea = new JTextArea();
@@ -92,6 +93,10 @@ public class Viewer {
         fileChooser.setApproveButtonText(command);
         fileChooser.showOpenDialog(frame);
         return fileChooser.getSelectedFile().getAbsolutePath();
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 
     /**

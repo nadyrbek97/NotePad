@@ -1,3 +1,5 @@
+import java.awt.print.PrinterJob;
+
 /**
  * Model class implements data management
  */
@@ -28,11 +30,23 @@ public class Model {
             case "Save Document":
                 saveDocument();
                 break;
+            case "Print Document":
+                printDocument();
+                break;
             case "Close Program":
                 exit();
                 break;
         }
 
+    }
+
+
+    /**
+     * Print document pages using printer
+     */
+    private void printDocument() {
+        Canvas canvas = viewer.getCanvas();
+        canvas.printOnPaper();
     }
 
     /**
@@ -44,6 +58,11 @@ public class Model {
         WriteAndRead.writeToFile(fileName, text);
     }
 
+    /**
+     * Create new document.
+     * If there is context in text area displays
+     * JOptionPane to confirm further action.
+     */
     private void newDocument() {
         String text = viewer.getTextArea().getText();
         if (!text.equals("")) {
