@@ -1,4 +1,11 @@
-import java.awt.print.PrinterJob;
+import images.JFontChooser;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import java.awt.*;
+import java.sql.SQLOutput;
 
 /**
  * Model class implements data management
@@ -33,12 +40,149 @@ public class Model {
             case "Print Document":
                 printDocument();
                 break;
+            case "Find Text":
+                findText();
+                break;
+            case "Find More":
+                findMoreText();
+                break;
+            case "Font":
+                fontChooser();
+                break;
+            case "Status Space":
+                statusSpace();
+                break;
+            case "Help":
+                help();
+                break;
+            case "About":
+                about();
+                break;
             case "Close Program":
                 exit();
                 break;
         }
 
     }
+
+    public Viewer getViewer() {
+        return viewer;
+    }
+
+
+    /**
+     * Listens to caret action and count number of Symbols and Lines
+     */
+    public void caretAction() {
+            viewer.getSymbols().setText("Symbols: " + viewer.getTextArea().getText().length());
+            viewer.getLines().setText("Lines: " + viewer.getTextArea().getLineCount());
+    }
+
+    /**
+     * Displays Help Pane
+     */
+    private void help() {
+        viewer.showMessage("If you need help contact me 0555-025-045");
+    }
+
+    private void about() {
+        viewer.showMessage("Authors : Erkin Koshoev , Nadyrbek Sultanov" +
+                "\nApril 2020");
+    }
+
+
+
+
+    /**
+     * Calls Status Space Panel
+     */
+    private void statusSpace() {
+        viewer.enableStatusBar();
+    }
+
+    /**
+     * Calls font chooser class through viewer
+     */
+    private void fontChooser() {
+        viewer.startFontChooser();
+    }
+
+    /**
+     * This method finds all matches text
+     * Get text from JOptionPane dialog
+     */
+    private void findMoreText() {
+        try {
+            // input text
+            String inputText = viewer.openFindInput().toLowerCase();
+            // textarea content
+            String text = viewer.getTextArea().getText().toLowerCase();
+            // get highlighter of text area
+            Highlighter highlighter = viewer.getTextArea().getHighlighter();
+            // remove all previous highlights
+            highlighter.removeAllHighlights();
+            // painter
+            Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+            int index = 0;
+            try {
+                if (text.isEmpty()) {
+                    viewer.showMessage("Text area is empty");
+                }
+                else {
+                    while ((index = text.indexOf(inputText, index)) >= 0) {
+                        highlighter.addHighlight(index, index + inputText.length(), painter);
+                        index += inputText.length();
+                    }
+                }
+                } catch (BadLocationException e) {
+                System.out.println("404");
+            }
+        } catch (NullPointerException nullPe) {
+            System.out.println("null");
+        } catch (StringIndexOutOfBoundsException ex) {
+            System.out.println("Index out of bounds");
+        }
+    }
+
+
+    /**
+     * Find text in text area
+     * Get text from JOptionPane dialog
+     */
+    private void findText() {
+        try {
+            // input text
+            String inputText = viewer.openFindInput().toLowerCase();
+            // textarea content
+            String text = viewer.getTextArea().getText().toLowerCase();
+            // length of input text
+            int inputTextLength = inputText.length();
+            int textLength = text.length();
+            // get highlighter of text area
+            Highlighter highlighter = viewer.getTextArea().getHighlighter();
+            // remove all previous highlights
+            highlighter.removeAllHighlights();
+            // painter
+            Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+            int index = 0;
+            try {
+                if (text.isEmpty()) {
+                    viewer.showMessage("Text area is empty");
+                } else {
+                    index = text.indexOf(inputText);
+                    highlighter.addHighlight(index, index + inputTextLength, painter);
+                }
+            } catch (BadLocationException e) {
+                System.out.println("404");
+            }
+        } catch (NullPointerException nullPe) {
+            System.out.println("null");
+        } catch (StringIndexOutOfBoundsException ex) {
+            System.out.println("Index out of bounds");
+        }
+    }
+
+
 
 
     /**

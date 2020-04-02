@@ -1,4 +1,7 @@
+import images.JFontChooser;
+
 import javax.swing.*;
+import javax.swing.event.CaretListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -23,6 +26,9 @@ public class Viewer {
     private JTextArea textArea;
     private JFileChooser fileChooser;
     private Canvas canvas;
+    private JPanel statusSpace;
+    private JLabel symbols;
+    private JLabel lines;
 
     /**
      * All depended objects created in Viewer constructor
@@ -48,6 +54,71 @@ public class Viewer {
         frame.setJMenuBar(menuBar);
         frame.add(scrollPane);
 
+        // status space
+        statusSpace = new JPanel();
+        symbols = new JLabel();
+        lines = new JLabel();
+        statusSpace.add(symbols);
+        statusSpace.add(lines);
+        statusSpace.setVisible(false);
+        frame.add(BorderLayout.SOUTH, statusSpace);
+        textArea.addCaretListener(controller);
+
+
+    }
+
+    /**
+     * Get symbols label to set number of symbols
+     * @return
+     */
+    public JLabel getSymbols() {
+        return symbols;
+    }
+
+    /**
+     * Get lines label to set number of lines
+     * @return
+     */
+    public JLabel getLines() {
+        return lines;
+    }
+
+    /**
+     * Shows the status space panel
+     */
+    public void enableStatusBar() {
+        if (statusSpace.isVisible()) {
+            statusSpace.setVisible(false);
+        } else
+            statusSpace.setVisible(true);
+    }
+
+    /**
+     * Starts font chooser Dialog
+     */
+    public void startFontChooser() {
+        JFontChooser fontChooser = new JFontChooser();
+        int result = fontChooser.showDialog(frame);
+        if (result == JFontChooser.OK_OPTION) {
+            Font font = fontChooser.getSelectedFont();
+            textArea.setFont(font);
+        }
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(frame, message);
+    }
+
+    /**
+     * Pop up input form for searching text in text area
+     * @return
+     */
+    public String openFindInput() {
+        return JOptionPane.showInputDialog(
+                frame,
+                "Enter your text",
+                "Find",
+                JOptionPane.YES_NO_CANCEL_OPTION);
     }
 
     /**
@@ -77,7 +148,7 @@ public class Viewer {
                 "Save file?",
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                new ImageIcon("/home/nadyrbek/development/NotePad/src/images/clear.gif"),
+                new ImageIcon("images/clear.gif"),
                 options,
                 options[2]);
     }
@@ -126,7 +197,7 @@ public class Viewer {
         /**
          * Ctrl-N
          */
-        JMenuItem createDocumentJMenuItem = new JMenuItem("New Document", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/new.gif"));
+        JMenuItem createDocumentJMenuItem = new JMenuItem("New Document", new ImageIcon("images/new.gif"));
         createDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         createDocumentJMenuItem.addActionListener(controller);
         createDocumentJMenuItem.setActionCommand("New Document");
@@ -134,7 +205,7 @@ public class Viewer {
         /**
          * Ctrl-O
          */
-        JMenuItem openDocumentJMenuItem = new JMenuItem("Open ...", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/open.gif"));
+        JMenuItem openDocumentJMenuItem = new JMenuItem("Open ...", new ImageIcon("images/open.gif"));
         openDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         openDocumentJMenuItem.addActionListener(controller);
         openDocumentJMenuItem.setActionCommand("Open Document");
@@ -142,7 +213,7 @@ public class Viewer {
         /**
          * Ctrl-S
          */
-        JMenuItem saveDocumentJMenuItem = new JMenuItem("Save", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/save.gif"));
+        JMenuItem saveDocumentJMenuItem = new JMenuItem("Save", new ImageIcon("images/save.gif"));
         saveDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         saveDocumentJMenuItem.addActionListener(controller);
         saveDocumentJMenuItem.setActionCommand("Save Document");
@@ -150,7 +221,7 @@ public class Viewer {
         /**
          * Ctrl-P
          */
-        JMenuItem printDocumentJMenuItem = new JMenuItem("Print ...", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/print.gif"));
+        JMenuItem printDocumentJMenuItem = new JMenuItem("Print ...", new ImageIcon("images/print.gif"));
         printDocumentJMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
         printDocumentJMenuItem.addActionListener(controller);
         printDocumentJMenuItem.setActionCommand("Print Document");
@@ -158,7 +229,7 @@ public class Viewer {
         /**
          * Exit
          */
-        JMenuItem closeJMenuItem = new JMenuItem("Exit", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/clear.gif"));
+        JMenuItem closeJMenuItem = new JMenuItem("Exit", new ImageIcon("images/clear.gif"));
         closeJMenuItem.addActionListener(controller);
         closeJMenuItem.setActionCommand("Close Program");
 
@@ -176,7 +247,7 @@ public class Viewer {
         /**
          * Ctrl-X
          */
-        JMenuItem cutTextMenuItem = new JMenuItem("Cut", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/cut.gif"));
+        JMenuItem cutTextMenuItem = new JMenuItem("Cut", new ImageIcon("images/cut.gif"));
         cutTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
         cutTextMenuItem.addActionListener(controller);
         cutTextMenuItem.setActionCommand("Cut Text");
@@ -184,7 +255,7 @@ public class Viewer {
         /**
          * Ctrl-C
          */
-        JMenuItem copyTextMenuItem = new JMenuItem("Copy", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/copy.gif"));
+        JMenuItem copyTextMenuItem = new JMenuItem("Copy", new ImageIcon("images/copy.gif"));
         copyTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         copyTextMenuItem.addActionListener(controller);
         copyTextMenuItem.setActionCommand("Copy Text");
@@ -192,7 +263,7 @@ public class Viewer {
         /**
          * Ctrl-V
          */
-        JMenuItem pasteTextMenuItem = new JMenuItem("Paste", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/paste.gif"));
+        JMenuItem pasteTextMenuItem = new JMenuItem("Paste", new ImageIcon("images/paste.gif"));
         pasteTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
         pasteTextMenuItem.addActionListener(controller);
         pasteTextMenuItem.setActionCommand("Paste Text");
@@ -200,7 +271,7 @@ public class Viewer {
         /**
          * Ctrl-D
          */
-        JMenuItem clearTextMenuItem = new JMenuItem("Clear", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/clear.gif"));
+        JMenuItem clearTextMenuItem = new JMenuItem("Clear", new ImageIcon("images/clear.gif"));
         clearTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
         clearTextMenuItem.addActionListener(controller);
         clearTextMenuItem.setActionCommand("Clear Text");
@@ -208,7 +279,7 @@ public class Viewer {
         /**
          * Ctrl-F
          */
-        JMenuItem findTextMenuItem = new JMenuItem("Find", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/find.gif"));
+        JMenuItem findTextMenuItem = new JMenuItem("Find", new ImageIcon("images/find.gif"));
         findTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
         findTextMenuItem.addActionListener(controller);
         findTextMenuItem.setActionCommand("Find Text");
@@ -216,34 +287,10 @@ public class Viewer {
         /**
          * Find more ... F3
          */
-        JMenuItem findMoreTextMenuItem = new JMenuItem("Find more ...", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/findMore.gif"));
+        JMenuItem findMoreTextMenuItem = new JMenuItem("Find more ...", new ImageIcon("images/findMore.gif"));
         findMoreTextMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, ActionEvent.CTRL_MASK));
         findMoreTextMenuItem.addActionListener(controller);
-        findMoreTextMenuItem.setActionCommand("Find Text");
-
-        /**
-         * Ctrl-G
-         */
-        JMenuItem goMenuItem = new JMenuItem("Go", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/go.gif"));
-        goMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
-        goMenuItem.addActionListener(controller);
-        goMenuItem.setActionCommand("Go");
-
-        /**
-         * Ctrl-A
-         */
-        JMenuItem markerMenuItem = new JMenuItem("MarkerAll", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/marker.gif"));
-        markerMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        markerMenuItem.addActionListener(controller);
-        markerMenuItem.setActionCommand("Marker");
-
-        /**
-         * Time and Date F5
-         */
-        JMenuItem timeAndDateMenuItem = new JMenuItem("Time and date", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/time.gif"));
-        timeAndDateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, ActionEvent.CTRL_MASK));
-        timeAndDateMenuItem.addActionListener(controller);
-        timeAndDateMenuItem.setActionCommand("Time and Date");
+        findMoreTextMenuItem.setActionCommand("Find More");
 
         /**
          * 'Edit' Menu Items
@@ -255,30 +302,23 @@ public class Viewer {
         editMenu.add(new JSeparator());
         editMenu.add(findTextMenuItem);
         editMenu.add(findMoreTextMenuItem);
-        editMenu.add(goMenuItem);
-        editMenu.add(markerMenuItem);
-        editMenu.add(timeAndDateMenuItem);
 
 
         /**
          * 'Format' Menu Items
          */
-        JMenuItem wordSpaceMenuItem = new JCheckBoxMenuItem("Word space", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/wordSpace.gif"));
-        wordSpaceMenuItem.addActionListener(controller);
-        wordSpaceMenuItem.setActionCommand("Word Space");
 
-        JMenuItem fontMenuItem = new JCheckBoxMenuItem("Font", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/font.gif"));
+        JMenuItem fontMenuItem = new JCheckBoxMenuItem("Font", new ImageIcon("images/font.gif"));
         fontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         fontMenuItem.addActionListener(controller);
         fontMenuItem.setActionCommand("Font");
 
-        formatMenu.add(wordSpaceMenuItem);
         formatMenu.add(fontMenuItem);
 
         /**
          * Status space
          */
-        JMenuItem statusSpaceMenuItem = new JCheckBoxMenuItem("Status space", new ImageIcon("/home/nadyrbek/development/NotePad/src/images/status.gif"));
+        JMenuItem statusSpaceMenuItem = new JCheckBoxMenuItem("Status space", new ImageIcon("images/status.gif"));
         statusSpaceMenuItem.addActionListener(controller);
         statusSpaceMenuItem.setActionCommand("Status Space");
 
@@ -291,17 +331,15 @@ public class Viewer {
          * Ctrl-G view help
          */
         JMenuItem viewHelpMenuItem = new JMenuItem("View Help");
-        viewHelpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
         viewHelpMenuItem.addActionListener(controller);
-        viewHelpMenuItem.setActionCommand("View Help");
+        viewHelpMenuItem.setActionCommand("Help");
 
         /**
          * Ctrl-A about
          */
-        JMenuItem aboutMenuItem = new JMenuItem("View Help");
-        aboutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+        JMenuItem aboutMenuItem = new JMenuItem("About");
         aboutMenuItem.addActionListener(controller);
-        aboutMenuItem.setActionCommand("View Help");
+        aboutMenuItem.setActionCommand("About");
 
         /**
          * 'Help' Menu Items

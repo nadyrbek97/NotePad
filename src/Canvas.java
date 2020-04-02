@@ -1,51 +1,31 @@
-import java.awt.*;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
+import javax.swing.*;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 
-public class Canvas implements Printable {
+/**
+ * Canvas
+ * used for printing and drawing
+ */
+public class Canvas {
 
-    private Model model;
+    private Viewer viewer;
 
     public Canvas(Model model) {
-        this.model = model;
-    }
-
-    public void printOnPaper() {
-        PrinterJob printerJob = PrinterJob.getPrinterJob();
-        printerJob.setPrintable(this);
-
-        boolean yes = printerJob.printDialog();
-        if (yes) {
-            try {
-                printerJob.print();
-            } catch (PrinterException ex) {
-                System.out.println(ex);
-            }
-        }
+        this.viewer = model.getViewer();
     }
 
     /**
-     *
-     * @param graphics
-     * @param pageFormat
-     * @param page
-     * @return
-     * @throws PrinterException
+     * Creates new JTextPane
+     * calls print() method of textPane
      */
-    @Override
-    public int print(Graphics graphics, PageFormat pageFormat, int page) throws PrinterException {
-        if (page > 0) {
-            return NO_SUCH_PAGE;
+    public void printOnPaper() {
+
+        try {
+            String text = viewer.getTextArea().getText();
+            JTextPane textPane = new JTextPane();
+            textPane.setText(text);
+            textPane.print();
+        } catch (PrinterException ex) {
+            System.out.println("Error while printing");
         }
-
-        Graphics2D graphics2D = (Graphics2D)graphics;
-
-        graphics2D.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-
-        graphics.drawString("hello ", 100, 100);
-
-        return PAGE_EXISTS;
     }
 }
