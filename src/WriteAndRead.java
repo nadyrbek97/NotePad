@@ -6,7 +6,7 @@ import java.io.*;
 public class WriteAndRead{
 
     public WriteAndRead() {
-
+        System.out.println("Write and Read");
     }
 
     /**

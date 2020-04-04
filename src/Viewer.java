@@ -1,7 +1,5 @@
-import images.JFontChooser;
-
 import javax.swing.*;
-import javax.swing.event.CaretListener;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -29,14 +27,22 @@ public class Viewer {
     private JPanel statusSpace;
     private JLabel symbols;
     private JLabel lines;
+    private Model model;
+    private JDialog fontDialog;
+    private JLabel sampleText;
+    private String SampleFont;
+    private int SampleStyle, SampleSize;
 
     /**
      * All depended objects created in Viewer constructor
      */
     public Viewer(){
+        System.out.println("Viewer constructor");
         controller = new Controller(this);
-        Model model = controller.getModel();
+        model = controller.getModel();
         canvas = new Canvas(model);
+
+        fontDialog = getFontChooser();
 
         // Text area
         textArea = new JTextArea();
@@ -64,7 +70,13 @@ public class Viewer {
         frame.add(BorderLayout.SOUTH, statusSpace);
         textArea.addCaretListener(controller);
 
+    }
 
+    /**
+     * Get Font Dialog
+     */
+    public JDialog getFontDialog() {
+        return fontDialog;
     }
 
     /**
@@ -94,17 +106,117 @@ public class Viewer {
     }
 
     /**
-     * Starts font chooser Dialog
+     * Set sample font
      */
-    public void startFontChooser() {
-        JFontChooser fontChooser = new JFontChooser();
-        int result = fontChooser.showDialog(frame);
-        if (result == JFontChooser.OK_OPTION) {
-            Font font = fontChooser.getSelectedFont();
-            textArea.setFont(font);
-        }
+    public void setSampleFont(String sampleFont) {
+        SampleFont = sampleFont;
     }
 
+    /**
+     * Set sample style
+     */
+    public void setSampleStyle(int sampleStyle) {
+        SampleStyle = sampleStyle;
+    }
+
+    /**
+     * Set sample size
+     */
+    public void setSampleSize(int sampleSize) {
+        SampleSize = sampleSize;
+    }
+
+    /**
+     *
+     */
+    public void startFontChooser() {
+        if (fontDialog.isVisible()) {
+            fontDialog.setVisible(false);
+        } else
+            fontDialog.setVisible(true);
+    }
+    
+
+    /**
+     * Starts font chooser dialog
+     */
+    public JDialog getFontChooser() {
+        fontDialog = new JDialog();
+        fontDialog.setModal(true);
+        fontDialog.setTitle("Font");
+        fontDialog.setSize(434, 260);
+        fontDialog.setLayout(new FlowLayout());
+        fontDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        JLabel fontLabel = new JLabel("Font:");
+        JLabel styleLabel = new JLabel("Font Style:");
+        JLabel sizeLabel = new JLabel("Size:");
+        JButton okButton = new JButton("OK");
+        fontDialog.getRootPane().setDefaultButton(okButton);
+        JButton cancelButton = new JButton("Cancel");
+        JButton colorButton = new JButton("Color");
+        sampleText = new JLabel("AaBbYyZz");
+        SampleFont = "Lucida Console";
+        SampleStyle = Font.PLAIN;
+        SampleSize = 12;
+        JList fontList = new JList(model.getFontList());
+        JList styleList = new JList(model.getStyleList());
+        JList sizeList = new JList(model.getSizes());
+        fontList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        styleList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        sizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JPanel okCancelButton = new JPanel();
+        okCancelButton.setLayout(new BoxLayout(okCancelButton, BoxLayout.Y_AXIS));
+        okButton.setMaximumSize(cancelButton.getMaximumSize());
+        okCancelButton.add(okButton);
+        okCancelButton.add(Box.createRigidArea(new Dimension(0, 5)));
+        okCancelButton.add(cancelButton);
+        JPanel samplePanel = new JPanel();
+        TitledBorder sampleBorder = BorderFactory.createTitledBorder("Sample");
+        samplePanel.setBorder(sampleBorder);
+        samplePanel.add(sampleText);
+        samplePanel.setPreferredSize(new Dimension(140, 48));
+        fontList.addListSelectionListener(controller);
+        styleList.addListSelectionListener(controller);
+        sizeList.addListSelectionListener(controller);
+        okButton.addActionListener(controller);
+        cancelButton.addActionListener(controller);
+        colorButton.addActionListener(controller);
+
+        JPanel fontPanel = new JPanel(new GridBagLayout());
+        JPanel stylePanel = new JPanel(new GridBagLayout());
+        JPanel sizePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        fontPanel.add(fontLabel, constraints);
+        stylePanel.add(styleLabel, constraints);
+        sizePanel.add(sizeLabel, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridy = 2;
+        JScrollPane fontScroll = new JScrollPane(fontList);
+        JScrollPane styleScroll = new JScrollPane(styleList);
+        JScrollPane sizeScroll = new JScrollPane(sizeList);
+        styleScroll.setPreferredSize(new Dimension(125, 110));
+        sizeScroll.setPreferredSize(new Dimension(59, 110));
+        fontScroll.setPreferredSize(new Dimension(135, 110));
+        fontPanel.add(fontScroll, constraints);
+        stylePanel.add(styleScroll, constraints);
+        sizePanel.add(sizeScroll, constraints);
+        fontDialog.add(fontPanel);
+        fontDialog.add(stylePanel);
+        fontDialog.add(sizePanel);
+        fontDialog.add(okCancelButton);
+        fontDialog.add(colorButton);
+        fontDialog.add(Box.createRigidArea(new Dimension(30, 0)));
+        fontDialog.add(samplePanel);
+        fontDialog.setResizable(false);
+
+        return fontDialog;
+    }
+
+    /**
+     * Shows message
+     * @param message
+     */
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(frame, message);
     }
@@ -168,6 +280,36 @@ public class Viewer {
 
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    /**
+     * Get sample text Jlabel
+     */
+
+    public JLabel getSampleText() {
+        return sampleText;
+    }
+
+    /**
+     * Get sample Style
+     */
+
+    public int getSampleStyle() {
+        return SampleStyle;
+    }
+
+    /**
+     * Get sample Font
+     */
+    public String getSampleFont() {
+        return SampleFont;
+    }
+
+    /**
+     * Get sample Size
+     */
+    public int getSampleSize() {
+        return SampleSize;
     }
 
     /**

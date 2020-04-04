@@ -1,14 +1,17 @@
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Controller implements ActionListener, CaretListener {
+public class Controller implements ActionListener, CaretListener, ListSelectionListener {
 
     private Model model;
 
     public Controller(Viewer viewer) {
+        System.out.println("Controller constructor");
         model = new Model(viewer);
     }
 
@@ -38,4 +41,15 @@ public class Controller implements ActionListener, CaretListener {
         model.caretAction();
     }
 
+    /**
+     * Listens list choices
+     * @param listEvent
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent listEvent) {
+        if (!listEvent.getValueIsAdjusting()) {
+            JList list = (JList) listEvent.getSource();
+            model.doListAction(list);
+        }
+    }
 }

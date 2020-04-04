@@ -1,11 +1,9 @@
-import images.JFontChooser;
-
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import java.awt.*;
-import java.sql.SQLOutput;
+import java.util.Arrays;
 
 /**
  * Model class implements data management
@@ -14,11 +12,15 @@ public class Model {
 
     private Viewer viewer;
     private String text;
+    private String[] fontList, styleList, sizes;
 
     public Model(Viewer viewer){
         this.viewer = viewer;
-        WriteAndRead writeAndRead = new WriteAndRead();
         System.out.println("Model Constructor");
+        fontList = getAllFonts();
+        styleList = getAllStyles();
+        // convert int[] to String[] and split with comma
+        sizes = Arrays.toString(getAllSizes()).split("[\\[\\]]")[1].split(", ");
     }
 
     /**
@@ -47,6 +49,12 @@ public class Model {
                 findMoreText();
                 break;
             case "Font":
+                fontChooser();
+                break;
+            case "OK":
+                changeFont();
+                break;
+            case "Cancel":
                 fontChooser();
                 break;
             case "Status Space":
@@ -79,6 +87,72 @@ public class Model {
     }
 
     /**
+     * Get Font List
+     * @return
+     */
+    public String[] getFontList() {
+        return fontList;
+    }
+
+    /**
+     * Get Style List
+     * @return
+     */
+    public String[] getStyleList() {
+        return styleList;
+    }
+
+    /**
+     * Get Size List
+     * @return
+     */
+    public String[] getSizes() {
+        return sizes;
+    }
+
+    /**
+     * Get all fonts
+     * @return
+     */
+    private String[] getAllFonts() {
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        return fonts;
+    }
+
+    /**
+     * Get Font styles
+     * @return
+     */
+    private String[] getAllStyles() {
+        String[] styleArray = {"Regular", "Italic", "Bold", "Bold Italic"};
+        return styleArray;
+    }
+
+    /**
+     * Get list of sizes
+     * @return
+     */
+    private int[] getAllSizes() {
+        int[] sizes = new int[16];
+        for (int i = 0; i < 5; i++) {
+            sizes[i] = i + 8;
+        }
+        for (int i = 5, j = 9; i < 13; i++, j++) {
+            sizes[i] = i + j;
+        }
+        sizes[13] = 36;
+        sizes[14] = 48;
+        sizes[15] = 72;
+        return sizes;
+    }
+
+    private void changeFont() {
+        viewer.getTextArea().setFont((viewer.getSampleText().getFont()));
+        viewer.getTextArea().setForeground(viewer.getSampleText().getForeground());
+        fontChooser();
+    }
+
+    /**
      * Displays Help Pane
      */
     private void help() {
@@ -89,9 +163,6 @@ public class Model {
         viewer.showMessage("Authors : Erkin Koshoev , Nadyrbek Sultanov" +
                 "\nApril 2020");
     }
-
-
-
 
     /**
      * Calls Status Space Panel
@@ -105,6 +176,27 @@ public class Model {
      */
     private void fontChooser() {
         viewer.startFontChooser();
+    }
+
+    /**
+     * Do action list for font chooser
+     * @param list
+     */
+    public void doListAction(JList list) {
+        String selectedValue = (String) list.getSelectedValue();
+        int sampleStyle;
+        if (Arrays.stream(fontList).anyMatch(selectedValue::equals)) {
+            viewer.setSampleFont(selectedValue);
+        } else if (Arrays.stream(styleList).anyMatch(selectedValue::equals)) {
+            sampleStyle = styleList[list.getSelectedIndex()].equals("Regular") ? Font.PLAIN
+                    : styleList[list.getSelectedIndex()].equals("Italic") ? Font.ITALIC
+                    : styleList[list.getSelectedIndex()].equals("Bold") ? Font.BOLD
+                    : Font.BOLD + Font.ITALIC;
+            viewer.setSampleStyle(sampleStyle);
+        } else {
+            viewer.setSampleSize(Integer.parseInt(sizes[list.getSelectedIndex()]));
+        }
+        viewer.getSampleText().setFont(new Font(viewer.getSampleFont(), viewer.getSampleStyle(), viewer.getSampleSize()));
     }
 
     /**
@@ -264,5 +356,7 @@ public class Model {
     private void exit() {
         System.exit(0);
     }
+
+
 
 }
